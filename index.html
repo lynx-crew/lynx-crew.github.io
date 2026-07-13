@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motoros Csatornám</title>
+    <style>
+        /* Modern, dögös sötét dizájn narancs/piros kiemeléssel */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        header {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=1200&q=80') no-repeat center center/cover;
+            padding: 100px 20px;
+        }
+        h1 {
+            color: #ff4500;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 30px auto;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(255, 69, 0, 0.3);
+            margin-bottom: 40px;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #ff4500;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 30px;
+            transition: 0.3s;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+        }
+        .btn:hover {
+            background-color: #e03d00;
+            transform: scale(1.05);
+        }
+        footer {
+            margin-top: 60px;
+            padding: 20px;
+            font-size: 0.9rem;
+            color: #666;
+            border-top: 1px solid #222;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <!-- Itt írd át a csatornád nevére -->
+        <h1>A Motoros Csatornám</h1>
+        <p>Túrák, tesztek, két kerék és végtelen aszfalt. Iratkozz fel, hogy ne maradj le a legújabb videókról!</p>
+        <!-- Cseréld ki a YouTube csatornád linkjére -->
+        <a href="https://youtube.com" target="_blank" class="btn">Irány a YouTube csatorna</a>
+    </header>
+
+    <div class="container">
+        <h2>A Legfrissebb Videóm</h2>
+        <div class="video-container">
+            <!-- Cseréld ki a saját videód beágyazási kódjára (embed link) -->
+            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Minden jog fenntartva.</p>
+    </footer>
+
+</body>
+</html>
