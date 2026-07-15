@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LynxCrew</title>
+    <title>Motoros Csatornám & Játék</title>
     <style>
         /* Modern, dögös sötét dizájn neon kiemelésekkel */
         body {
@@ -15,7 +15,7 @@
             text-align: center;
         }
         header {
-            background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url('https://i.imgur.com/iYHuEey.jpeg?auto=format&fit=crop&w=1200&q=80') no-repeat center center/cover;
+            background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=1200&q=80') no-repeat center center/cover;
             padding: 120px 20px 80px 20px;
         }
         h1 {
@@ -93,34 +93,67 @@
         }
         
         /* Egyedi gomb színek */
-        .btn-youtube {
-            background-color: #ff0000;
-        }
-        .btn-youtube:hover {
-            background-color: #cc0000;
-        }
-        .btn-instagram {
-            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-        }
-        .btn-instagram:hover {
-            opacity: 0.9;
-        }
-        .btn-tiktok {
-            background-color: #010101;
-            border: 1px solid #25f4ee;
-        }
-        .btn-tiktok:hover {
-            background-color: #111;
-            box-shadow: 0 0 15px rgba(37, 244, 238, 0.4);
-        }
-        .btn-email {
-            background-color: #2b2b36;
-            border: 1px solid #444;
-        }
-        .btn-email:hover {
-            background-color: #3a3a4a;
-        }
+        .btn-youtube { background-color: #ff0000; }
+        .btn-youtube:hover { background-color: #cc0000; }
+        .btn-instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+        .btn-instagram:hover { opacity: 0.9; }
+        .btn-tiktok { background-color: #010101; border: 1px solid #25f4ee; }
+        .btn-tiktok:hover { background-color: #111; box-shadow: 0 0 15px rgba(37, 244, 238, 0.4); }
+        .btn-email { background-color: #2b2b36; border: 1px solid #444; }
+        .btn-email:hover { background-color: #3a3a4a; }
         
+        /* --- MOTOROS JÁTÉK SZEKCIÓ --- */
+        .game-section {
+            background-color: #16161a;
+            border-radius: 14px;
+            padding: 30px 20px;
+            border: 1px solid #2a2a35;
+            margin-top: 60px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        #gameCanvas {
+            background-color: #050508;
+            border: 3px solid #ff4500;
+            border-radius: 8px;
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+        }
+        .score-board {
+            font-size: 1.4rem;
+            margin: 15px 0;
+            font-weight: bold;
+            color: #ff4500;
+        }
+        /* Mobil irányító gombok */
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(3, 60px);
+            grid-gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .ctrl-btn {
+            width: 60px;
+            height: 60px;
+            background-color: #2b2b36;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+            touch-action: manipulation;
+        }
+        .ctrl-btn:active {
+            background-color: #ff4500;
+        }
+        .ctrl-up { grid-column: 2; }
+        .ctrl-left { grid-column: 1; }
+        .ctrl-right { grid-column: 3; }
+        .ctrl-down { grid-column: 2; }
+
         footer {
             margin-top: 80px;
             padding: 30px;
@@ -133,16 +166,13 @@
 <body>
 
     <header>
-        <!-- IDE ÍRD A CSATORNÁD NEVÉT -->
-        <h1>LynxCrew</h1>
-        <p>Túrák, tesztek, egykerék és végtelen aszfalt. Kövess be a többi platformon is, hogy ne maradj le semmiről!</p>
+        <h1>A Motoros Csatornám</h1>
+        <p>Túrák, tesztek, két kerék és végtelen aszfalt. Kövess be a többi platformon is, hogy ne maradj le semmiről!</p>
         
         <div class="social-buttons">
-            <!-- CSERÉLD KI A SAJÁT LINKJEIDRE -->
-            <a href="http://www.youtube.com/@deathenduro0727" target="_blank" class="btn btn-youtube">YouTube</a>
+            <a href="https://youtube.com" target="_blank" class="btn btn-youtube">YouTube</a>
             <a href="https://instagram.com" target="_blank" class="btn btn-instagram">Instagram</a>
             <a href="https://tiktok.com" target="_blank" class="btn btn-tiktok">TikTok</a>
-            <!-- A 'mailto:' után írd be a saját e-mail címedet -->
             <a href="mailto:valami@email.com" class="btn btn-email">Kapcsolat (Email)</a>
         </div>
     </header>
@@ -150,8 +180,23 @@
     <div class="container">
         <h2>A Legfrissebb Videóm</h2>
         <div class="video-container">
-            <!-- IDE JÖHET A SAJÁT VIDEÓD BEÁGYAZÁSI LINKJE -->
-            <iframe src="https://www.youtube.com/embed/nwl0sm1OxHc" allowfullscreen></iframe>
+            <iframe src="https://www.youtube.com/embed/3MolcZV7Ff4" allowfullscreen></iframe>
+        </div>
+
+        <!-- JÁTÉK SZEKCIÓ -->
+        <div class="game-section">
+            <h2>Gyűjtsd a benzint! (Mini Játék)</h2>
+            <p style="font-size: 0.9rem; color: #888; margin-bottom: 15px;">Irányítsd a motort a nyilakkal vagy a lenti gombokkal!</p>
+            <div class="score-board">Benzin: <span id="score">0</span></div>
+            <canvas id="gameCanvas" width="400" height="400"></canvas>
+            
+            <!-- Mobil gombok -->
+            <div class="controls">
+                <button class="ctrl-btn ctrl-up" onclick="changeDirection('up')">▲</button>
+                <button class="ctrl-btn ctrl-left" onclick="changeDirection('left')">◀</button>
+                <button class="ctrl-btn ctrl-right" onclick="changeDirection('right')">▶</button>
+                <button class="ctrl-btn ctrl-down" onclick="changeDirection('down')">▼</button>
+            </div>
         </div>
     </div>
 
@@ -159,5 +204,109 @@
         <p>&copy; 2026 Minden jog fenntartva.</p>
     </footer>
 
+    <!-- JÁTÉK MOTOR (JAVASCRIPT) -->
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        const scoreElement = document.getElementById("score");
+
+        const gridSize = 20;
+        const tileCount = canvas.width / gridSize;
+
+        let motor = [{ x: 10, y: 10 }];
+        let fuel = { x: 5, y: 5 };
+        let dx = 1;
+        let dy = 0;
+        let score = 0;
+        let gameInterval;
+
+        function startGame() {
+            placeFuel();
+            gameInterval = setInterval(update, 120);
+        }
+
+        function update() {
+            // Mozgás számítása
+            const head = { x: motor[0].x + dx, y: motor[0].y + dy };
+
+            // Ütközés detektálás (falnak vagy önmagának)
+            if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount || collision(head)) {
+                resetGame();
+                return;
+            }
+
+            motor.unshift(head);
+
+            // Benzin felvétele
+            if (head.x === fuel.x && head.y === fuel.y) {
+                score++;
+                scoreElement.innerText = score;
+                placeFuel();
+            } else {
+                motor.pop();
+            }
+
+            draw();
+        }
+
+        function draw() {
+            // Háttér letakarítása
+            ctx.fillStyle = "#050508";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Benzin (Piros kör)
+            ctx.fillStyle = "#ff4500";
+            ctx.beginPath();
+            ctx.arc(fuel.x * gridSize + gridSize/2, fuel.y * gridSize + gridSize/2, gridSize/2 - 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Motor és a "nyomvonal" (Narancs négyzetek)
+            motor.forEach((part, index) => {
+                ctx.fillStyle = index === 0 ? "#ff8c00" : "#d2691e"; // a feje világosabb narancs
+                ctx.fillRect(part.x * gridSize, part.y * gridSize, gridSize - 2, gridSize - 2);
+            });
+        }
+
+        function collision(head) {
+            return motor.some((part, index) => index !== 0 && part.x === head.x && part.y === head.y);
+        }
+
+        function placeFuel() {
+            fuel.x = Math.floor(Math.random() * tileCount);
+            fuel.y = Math.floor(Math.random() * tileCount);
+            // Ne tegye a motorra a benzint
+            if (motor.some(part => part.x === fuel.x && part.y === fuel.y)) {
+                placeFuel();
+            }
+        }
+
+        function resetGame() {
+            alert("Kifogytál a benzinből! Végső pontszámod: " + score);
+            motor = [{ x: 10, y: 10 }];
+            dx = 1;
+            dy = 0;
+            score = 0;
+            scoreElement.innerText = score;
+            placeFuel();
+        }
+
+        // Billentyűzet irányítás
+        document.addEventListener("keydown", e => {
+            if (e.key === "ArrowUp" && dy === 0) { dx = 0; dy = -1; e.preventDefault(); }
+            if (e.key === "ArrowDown" && dy === 0) { dx = 0; dy = 1; e.preventDefault(); }
+            if (e.key === "ArrowLeft" && dx === 0) { dx = -1; dy = 0; e.preventDefault(); }
+            if (e.key === "ArrowRight" && dx === 0) { dx = 1; dy = 0; e.preventDefault(); }
+        });
+
+        // Mobil gomb irányítás
+        function changeDirection(dir) {
+            if (dir === 'up' && dy === 0) { dx = 0; dy = -1; }
+            if (dir === 'down' && dy === 0) { dx = 0; dy = 1; }
+            if (dir === 'left' && dx === 0) { dx = -1; dy = 0; }
+            if (dir === 'right' && dx === 0) { dx = 1; dy = 0; }
+        }
+
+        startGame();
+    </script>
 </body>
 </html>
