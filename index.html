@@ -15,7 +15,7 @@
             text-align: center;
         }
         header {
-            background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url('https://i.imgur.com/iYHuEey.jpeg?auto=format&fit=crop&w=1200&q=80') no-repeat center center/cover;
+            background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=1200&q=80') no-repeat center center/cover;
             padding: 120px 20px 80px 20px;
         }
         h1 {
@@ -110,20 +110,59 @@
             border: 1px solid #2a2a35;
             margin-top: 60px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+        .canvas-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            margin: 0 auto;
+            max-width: 100%;
         }
         #gameCanvas {
             background-color: #050508;
             border: 3px solid #ff4500;
             border-radius: 8px;
             display: block;
-            margin: 0 auto;
-            max-width: 100%;
+            width: 100%;
+            height: 100%;
         }
         .score-board {
             font-size: 1.4rem;
             margin: 15px 0;
             font-weight: bold;
             color: #ff4500;
+        }
+        /* Start képernyő overlay */
+        .start-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(5, 5, 8, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            z-index: 10;
+        }
+        .start-btn {
+            background-color: #ff4500;
+            color: white;
+            border: none;
+            padding: 16px 36px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 69, 0, 0.5);
+            transition: 0.2s;
+        }
+        .start-btn:hover {
+            background-color: #e03d00;
+            transform: scale(1.05);
         }
         /* Mobil irányító gombok */
         .controls {
@@ -188,7 +227,14 @@
             <h2>Gyűjtsd a benzint! (Mini Játék)</h2>
             <p style="font-size: 0.9rem; color: #888; margin-bottom: 15px;">Irányítsd a motort a nyilakkal vagy a lenti gombokkal!</p>
             <div class="score-board">Benzin: <span id="score">0</span></div>
-            <canvas id="gameCanvas" width="400" height="400"></canvas>
+            
+            <div class="canvas-container">
+                <!-- Start gomb felület -->
+                <div id="startOverlay" class="start-overlay">
+                    <button class="start-btn" onclick="initGame()">Játék Indítása</button>
+                </div>
+                <canvas id="gameCanvas" width="400" height="400"></canvas>
+            </div>
             
             <!-- Mobil gombok -->
             <div class="controls">
@@ -209,6 +255,7 @@
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
         const scoreElement = document.getElementById("score");
+        const startOverlay = document.getElementById("startOverlay");
 
         const gridSize = 20;
         const tileCount = canvas.width / gridSize;
@@ -218,26 +265,46 @@
         let dx = 1;
         let dy = 0;
         let score = 0;
-        let gameInterval;
+        let gameInterval = null;
+        let gameRunning = false;
 
-        function startGame() {
+        // Az oldal betöltésekor csak kirajzoljuk az alapállapotot, de nem indítjuk el a ciklust
+        function drawInitial() {
+            ctx.fillStyle = "#050508";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#ff8c00";
+            ctx.fillRect(motor[0].x * gridSize, motor[0].y * gridSize, gridSize - 2, gridSize - 2);
+        }
+
+        function initGame() {
+            if (gameRunning) return;
+            
+            // Overlay elrejtése
+            startOverlay.style.display = "none";
+            gameRunning = true;
+            
+            // Értékek alaphelyzetbe állítása
+            motor = [{ x: 10, y: 10 }];
+            dx = 1;
+            dy = 0;
+            score = 0;
+            scoreElement.innerText = score;
+            
             placeFuel();
+            // Játék indítása
             gameInterval = setInterval(update, 120);
         }
 
         function update() {
-            // Mozgás számítása
             const head = { x: motor[0].x + dx, y: motor[0].y + dy };
 
-            // Ütközés detektálás (falnak vagy önmagának)
             if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount || collision(head)) {
-                resetGame();
+                gameOver();
                 return;
             }
 
             motor.unshift(head);
 
-            // Benzin felvétele
             if (head.x === fuel.x && head.y === fuel.y) {
                 score++;
                 scoreElement.innerText = score;
@@ -250,19 +317,16 @@
         }
 
         function draw() {
-            // Háttér letakarítása
             ctx.fillStyle = "#050508";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Benzin (Piros kör)
             ctx.fillStyle = "#ff4500";
             ctx.beginPath();
             ctx.arc(fuel.x * gridSize + gridSize/2, fuel.y * gridSize + gridSize/2, gridSize/2 - 2, 0, Math.PI * 2);
             ctx.fill();
 
-            // Motor és a "nyomvonal" (Narancs négyzetek)
             motor.forEach((part, index) => {
-                ctx.fillStyle = index === 0 ? "#ff8c00" : "#d2691e"; // a feje világosabb narancs
+                ctx.fillStyle = index === 0 ? "#ff8c00" : "#d2691e";
                 ctx.fillRect(part.x * gridSize, part.y * gridSize, gridSize - 2, gridSize - 2);
             });
         }
@@ -274,39 +338,39 @@
         function placeFuel() {
             fuel.x = Math.floor(Math.random() * tileCount);
             fuel.y = Math.floor(Math.random() * tileCount);
-            // Ne tegye a motorra a benzint
             if (motor.some(part => part.x === fuel.x && part.y === fuel.y)) {
                 placeFuel();
             }
         }
 
-        function resetGame() {
+        function gameOver() {
+            clearInterval(gameInterval);
+            gameRunning = false;
             alert("Kifogytál a benzinből! Végső pontszámod: " + score);
-            motor = [{ x: 10, y: 10 }];
-            dx = 1;
-            dy = 0;
-            score = 0;
-            scoreElement.innerText = score;
-            placeFuel();
+            
+            // Újra megjelenítjük a start gombot
+            startOverlay.style.display = "flex";
+            drawInitial();
         }
 
-        // Billentyűzet irányítás
         document.addEventListener("keydown", e => {
+            if (!gameRunning) return;
             if (e.key === "ArrowUp" && dy === 0) { dx = 0; dy = -1; e.preventDefault(); }
             if (e.key === "ArrowDown" && dy === 0) { dx = 0; dy = 1; e.preventDefault(); }
             if (e.key === "ArrowLeft" && dx === 0) { dx = -1; dy = 0; e.preventDefault(); }
             if (e.key === "ArrowRight" && dx === 0) { dx = 1; dy = 0; e.preventDefault(); }
         });
 
-        // Mobil gomb irányítás
         function changeDirection(dir) {
+            if (!gameRunning) return;
             if (dir === 'up' && dy === 0) { dx = 0; dy = -1; }
             if (dir === 'down' && dy === 0) { dx = 0; dy = 1; }
             if (dir === 'left' && dx === 0) { dx = -1; dy = 0; }
             if (dir === 'right' && dx === 0) { dx = 1; dy = 0; }
         }
 
-        startGame();
+        // Első renderelés indítás nélkül
+        drawInitial();
     </script>
 </body>
 </html>
