@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Motoros Csatornám & Egykerekezés Játék</title>
+    <title>Motoros Csatornám & Supermoto Wheelie</title>
     <style>
         /* Modern, dögös sötét dizájn neon kiemelésekkel */
         body {
@@ -232,16 +232,16 @@
 
         <!-- JÁTÉK SZEKCIÓ -->
         <div class="game-section">
-            <h2>Egykerekezés Bajnokság</h2>
-            <p style="font-size: 1rem; color: #ccc; margin-bottom: 5px;">Tartsd egyensúlyban a motort a zöld zónában!</p>
+            <h2>Supermoto Wheelie Bajnokság</h2>
+            <p style="font-size: 1rem; color: #ccc; margin-bottom: 5px;">Rántsd fel és tartsd meg gázzal-fékkel!</p>
             <div class="score-board">Idő: <span id="score">0.0</span> mp</div>
             
             <div class="canvas-container">
                 <div id="startOverlay" class="start-overlay">
-                    <button class="start-btn" onclick="initGame()">Mentés Indítása</button>
+                    <button class="start-btn" onclick="initGame()">Kuplungolás / Start</button>
                     <div class="instructions">
-                        <p><strong>PC:</strong> [↑] Gáz / Emelés, [↓] Fék / Süllyesztés (vagy W/S)</p>
-                        <p><strong>Cél:</strong> Ne hagyd lecsapódni az elejét, de ne is ess hátra!</p>
+                        <p><strong>PC:</strong> [↑] Gáz (Emelés), [↓] Hátsó fék (Mentés) / vagy W-S</p>
+                        <p>Agresszívabb gázreakció! Ne engedd hanyatt esni, de ne is koppanjon le!</p>
                     </div>
                 </div>
                 <canvas id="gameCanvas" width="480" height="320"></canvas>
@@ -271,17 +271,17 @@
         let startTime;
         let gameInterval;
 
-        // Finomított fizika a jobb játszhatóságért
+        // Agresszívabb supermoto fizika
         const bike = {
-            x: 150,
+            x: 160,
             y: 200,
-            wheelRadius: 15,
-            angle: 0.15, // Enyhe kezdőszög, hogy érezhető legyen
+            wheelRadius: 14,
+            angle: 0.2, 
             angleVelocity: 0,
-            gravity: 0.0006, // Csökkentett dőlési nehézség (lassabban esik vissza / hanyatt)
-            controlAcc: 0.0012, // Érzékenyebb, de finom irányíthatóság
-            maxAngle: 1.2, // ~70 fok a bukási határ
-            minAngle: 0.02 // Nem engedjük teljesen lekoppanni azonnal
+            gravity: 0.0012,    // Megnövelt gravitációs húzás a gyorsabb reakcióért
+            controlAcc: 0.0028, // Sokkal agresszívabb gázadás
+            maxAngle: 1.25,     // Bukási határ szögben
+            minAngle: 0.02
         };
 
         let inputs = { up: false, down: false };
@@ -289,19 +289,17 @@
         function drawInitial() {
             ctx.fillStyle = "#050508";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            // Talaj
             ctx.fillStyle = "#111115";
             ctx.fillRect(0, 240, canvas.width, 80);
             ctx.fillStyle = "#ff4500";
             ctx.fillRect(0, 240, canvas.width, 2); 
 
-            drawBike(0.15);
+            drawBike(0.2);
         }
 
         function drawBike(angle) {
             ctx.save();
             
-            // Hátsó kerék középpontja (forgási pont)
             const rearX = bike.x;
             const rearY = 240 - bike.wheelRadius;
             
@@ -309,82 +307,102 @@
             ctx.rotate(-angle);
             ctx.translate(-rearX, -rearY);
 
-            // KIPUFOGÓ ÉS HÁTSÓ RÉSZ
-            ctx.strokeStyle = "#555";
+            // LAPOS MAGAS KIPUFOGÓ (Supermoto stílus, ülés alá húzva)
+            ctx.strokeStyle = "#777";
             ctx.lineWidth = 4;
             ctx.beginPath();
-            ctx.moveTo(bike.x - 10, rearY - 10);
-            ctx.lineTo(bike.x - 35, rearY - 20);
+            ctx.moveTo(bike.x - 5, rearY - 20);
+            ctx.lineTo(bike.x - 30, rearY - 40);
             ctx.stroke();
 
-            // VÁZ (Sportmotor sziluett)
-            ctx.fillStyle = "#ff4500"; // Domináns narancs váz
+            // VÁZ ÉS BLOKK REPRODUKCIÓ (Könnyű krossz/SM váz)
+            ctx.fillStyle = "#333";
             ctx.beginPath();
             ctx.moveTo(bike.x, rearY);
-            ctx.lineTo(bike.x + 40, rearY - 35); // Tank alja
-            ctx.lineTo(bike.x + 75, rearY - 35); // Fejidom felé
-            ctx.lineTo(bike.x + 65, rearY);     // Blokktartó
-            ctx.lineTo(bike.x + 20, rearY + 5);
+            ctx.lineTo(bike.x + 35, rearY - 40);
+            ctx.lineTo(bike.x + 65, rearY - 45); // Kormányoszlop felé
+            ctx.lineTo(bike.x + 50, rearY - 5);
             ctx.closePath();
             ctx.fill();
 
-            // TANK ÉS ÜLÉS
-            ctx.fillStyle = "#222";
+            // MAGAS EGYENES SUPERMOTO ÜLÉS ÉS PLASZTIKOK
+            ctx.fillStyle = "#ff4500"; // Neon narancs/piros idomok
             ctx.beginPath();
-            ctx.moveTo(bike.x + 5, rearY - 18);  // Ülés kezdete
-            ctx.lineTo(bike.x + 35, rearY - 22); // Ülés vége / tank eleje
-            ctx.lineTo(bike.x + 55, rearY - 45); // Tank teteje
-            ctx.lineTo(bike.x + 75, rearY - 35);
-            ctx.lineTo(bike.x + 40, rearY - 35);
+            ctx.moveTo(bike.x - 20, rearY - 45); // Hátsó sárvédő vége
+            ctx.lineTo(bike.x + 15, rearY - 40); // Lapos ülés
+            ctx.lineTo(bike.x + 45, rearY - 42); // Tank idom kezdete
+            ctx.lineTo(bike.x + 55, rearY - 55); // Tank teteje
+            ctx.lineTo(bike.x + 65, rearY - 40); // Idom alja
+            ctx.lineTo(bike.x + 30, rearY - 30);
             ctx.closePath();
             ctx.fill();
 
-            // MOTORBLOKK (Szürke rész középen)
-            ctx.fillStyle = "#444";
-            ctx.fillRect(bike.x + 35, rearY - 15, 25, 20);
+            // FEKETE LAPOS ÜLÉSBETÉT
+            ctx.fillStyle = "#111";
+            ctx.beginPath();
+            ctx.moveTo(bike.x - 5, rearY - 41);
+            ctx.lineTo(bike.x + 35, rearY - 41);
+            ctx.lineTo(bike.x + 42, rearY - 46);
+            ctx.lineTo(bike.x + 15, rearY - 40);
+            ctx.closePath();
+            ctx.fill();
 
-            // ELSŐ VILLA
-            ctx.strokeStyle = "#888";
+            // HOSSZÚ ELSŐ VILLA (Krosszmotoros telók)
+            ctx.strokeStyle = "#bbb";
             ctx.lineWidth = 4;
             ctx.beginPath();
-            ctx.moveTo(bike.x + 70, rearY - 35);
-            ctx.lineTo(bike.x + 95, rearY + 5); // Első kerék tengelyig tart
+            ctx.moveTo(bike.x + 60, rearY - 45);
+            ctx.lineTo(bike.x + 80, rearY + 15); // Mélyre nyúló tengelypont
             ctx.stroke();
 
-            // KORMÁNY
-            ctx.fillStyle = "#111";
-            ctx.fillRect(bike.x + 65, rearY - 42, 10, 4);
+            // SUPERMOTO CSŐR (Magas első sárvédő)
+            ctx.fillStyle = "#ff4500";
+            ctx.beginPath();
+            ctx.moveTo(bike.x + 62, rearY - 46);
+            ctx.lineTo(bike.x + 85, rearY - 52);
+            ctx.lineTo(bike.x + 70, rearY - 40);
+            ctx.closePath();
+            ctx.fill();
 
-            // HÁTSÓ KERÉK
+            // MAGAS KORMÁNY
+            ctx.strokeStyle = "#222";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(bike.x + 58, rearY - 47);
+            ctx.lineTo(bike.x + 56, rearY - 56);
+            ctx.lineTo(bike.x + 66, rearY - 58);
+            ctx.stroke();
+
+            // HÁTSÓ KERÉK (Kisebb Supermoto felni, vastag gumi)
             ctx.beginPath();
             ctx.arc(bike.x, rearY, bike.wheelRadius, 0, Math.PI * 2);
-            ctx.fillStyle = "#1a1a20";
+            ctx.fillStyle = "#15151c";
             ctx.fill();
-            ctx.lineWidth = 4;
-            ctx.strokeStyle = "#333";
+            ctx.lineWidth = 5;
+            ctx.strokeStyle = "#222";
             ctx.stroke();
-            // Felni belső díszítés
+            // Küllők és belső kör
             ctx.beginPath();
             ctx.arc(bike.x, rearY, bike.wheelRadius - 6, 0, Math.PI * 2);
             ctx.strokeStyle = "#ff4500";
-            ctx.lineWidth = 1;
+            ctx.lineWidth = 1.5;
             ctx.stroke();
 
-            // ELSŐ KERÉK (A villa végénél)
-            const frontX = bike.x + 95;
-            const frontY = rearY + 5;
+            // ELSŐ KERÉK
+            const frontX = bike.x + 80;
+            const frontY = rearY + 15;
             ctx.beginPath();
             ctx.arc(frontX, frontY, bike.wheelRadius, 0, Math.PI * 2);
-            ctx.fillStyle = "#1a1a20";
+            ctx.fillStyle = "#15151c";
             ctx.fill();
-            ctx.strokeStyle = "#333";
-            ctx.lineWidth = 4;
+            ctx.strokeStyle = "#222";
+            ctx.lineWidth = 5;
             ctx.stroke();
-            // Első felni dísz
+            // Első küllők
             ctx.beginPath();
             ctx.arc(frontX, frontY, bike.wheelRadius - 6, 0, Math.PI * 2);
             ctx.strokeStyle = "#ff4500";
-            ctx.lineWidth = 1;
+            ctx.lineWidth = 1.5;
             ctx.stroke();
 
             ctx.restore();
@@ -395,9 +413,9 @@
             startOverlay.style.display = "none";
             gameRunning = true;
             
-            // Kiegyensúlyozott kezdő értékek
-            bike.angle = 0.3; 
-            bike.angleVelocity = 0.002;
+            // Indításkor agresszív kezdőlökés
+            bike.angle = 0.35; 
+            bike.angleVelocity = 0.015;
             
             score = 0;
             scoreElement.innerText = "0.0";
@@ -413,30 +431,26 @@
             score = (Date.now() - startTime) / 1000;
             scoreElement.innerText = score.toFixed(1);
 
-            // Természetes fizika: ha túl magasan van, a gravitáció hátrafelé rántja (hanyatt esés). 
-            // Ha túl alacsonyan van, a motor súlya előrefelé kényszeríti le.
-            // Az egyensúlyi pont 0.4 és 0.7 radián között van ideálisan.
-            
-            bike.angleVelocity += (bike.angle - 0.45) * bike.gravity;
+            // Gyorsabb, idegesebb fizika számítás
+            bike.angleVelocity += (bike.angle - 0.5) * bike.gravity;
             
             if (inputs.up) {
-                bike.angleVelocity += bike.controlAcc; // Gázzal emeled
+                bike.angleVelocity += bike.controlAcc; // Erős gázfröccs
             }
             if (inputs.down) {
-                bike.angleVelocity -= bike.controlAcc * 1.3; // Fékkel tolod le az orrát
+                bike.angleVelocity -= bike.controlAcc * 1.5; // Kemény taposás a hátsó féken
             }
 
-            // Légellenállás/súrlódás szimulálása, hogy ne lengjen ki végtelenül
-            bike.angleVelocity *= 0.96; 
+            // Kevesebb csillapítás = pattogósabb, reszponzívabb irányítás
+            bike.angleVelocity *= 0.95; 
             bike.angle += bike.angleVelocity;
 
-            // Határok ellenőrzése
             if (bike.angle >= bike.maxAngle) {
-                gameOver("Hanyatt estél! Óvatosabban a gázzal!");
+                gameOver("Átdobtad a bringát! Hanyatt esés!");
                 return;
             }
             if (bike.angle <= bike.minAngle) {
-                gameOver("Leesett az első kerék! Több gázt!");
+                gameOver("Lecsapódott az eleje! Picit több gázzal tartsd meg!");
                 return;
             }
 
@@ -453,15 +467,11 @@
             ctx.fillStyle = "#ff4500";
             ctx.fillRect(0, 240, canvas.width, 2);
 
-            // "Egyensúly zóna" vizuális segédlet a háttérben (opcionális, de segít a játékosnak)
-            ctx.fillStyle = "rgba(0, 255, 0, 0.03)";
-            ctx.fillRect(0, 50, canvas.width, 120);
-
             drawBike(bike.angle);
             
-            // Veszélyzóna villanás
-            if (bike.angle > 0.95 || bike.angle < 0.15) {
-                ctx.fillStyle = "rgba(255, 0, 0, 0.15)";
+            // Kritikus zóna villogás (ha nagyon közel van a bukás)
+            if (bike.angle > 1.05 || bike.angle < 0.18) {
+                ctx.fillStyle = "rgba(255, 0, 0, 0.2)";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
         }
@@ -473,7 +483,7 @@
             ctx.fillStyle = "rgba(0,0,0,0.6)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            alert(`${message}\n\nEredményed: ${score.toFixed(1)} másodperc.`);
+            alert(`${message}\n\nWheelie idő: ${score.toFixed(1)} másodperc.`);
             startOverlay.style.display = "flex";
             drawInitial();
         }
